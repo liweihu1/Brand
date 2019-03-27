@@ -9,4 +9,6 @@ public final class Constants {
     public static String ALARM_REPLY = "";
     public static String FIRE_STATION_REQUEST = "";
     public static String FIRE_STATION_REPLY = "";
+
+    public static String HOST = "localhost";
 }
