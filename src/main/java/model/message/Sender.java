@@ -8,26 +8,27 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 public class Sender {
-    private String queueName;
     private Channel channel;
+    private final String queueName;
 
-    public Sender(String queueName) throws IOException, TimeoutException {
+    public Sender(final String queueName) throws IOException, TimeoutException {
+        this.queueName = queueName;
         ConnectionFactory factory = new ConnectionFactory();
         factory.setRequestedHeartbeat(20);
         factory.setHost("localhost");
-        this.queueName = queueName;
+
         try (Connection connection = factory.newConnection(); Channel channel = connection.createChannel()) {
-            this.channel = channel;
             channel.queueDeclare(queueName, false, false, false, null);
+            this.channel = channel;
         }
     }
 
-    public boolean sendMessage(String message) throws IOException {
+    public void sendMessage(String message) {
         try{
             channel.basicPublish("", queueName, null, message.getBytes("UTF-8"));
-            return true;
+            System.out.println(queueName + " Sent '" + message + "'");
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
         }
     }
 }
