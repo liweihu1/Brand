@@ -15,7 +15,7 @@ public class FireStationSenderGateway {
     public FireStationSenderGateway() {
         try {
             this.fireStationSerializer = new FireStationSerializer();
-            senderGateway = new MessageSenderGateway(Constants.FIRE_STATION_REPLY);
+            this.senderGateway = new MessageSenderGateway(Constants.FIRE_STATION_REPLY);
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
         }
