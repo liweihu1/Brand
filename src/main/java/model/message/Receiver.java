@@ -15,10 +15,7 @@ public class Receiver {
         factory.setHost("localhost");
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
-
-        channel.queueDeclare(queueName, false, false, false, null);
-        System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-
+        System.out.println(" [*] Waiting for messages on queue " + queueName);
         channel.basicConsume(queueName, true, callback, consumerTag -> { });
     }
 }

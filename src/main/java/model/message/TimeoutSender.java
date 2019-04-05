@@ -22,7 +22,6 @@ public class TimeoutSender {
         this.toSentMessages = new ArrayList<>();
         this.queueName = queueName;
         factory = new ConnectionFactory();
-        factory.setRequestedHeartbeat(20);
         factory.setHost("localhost");
         System.out.println("Sender started");
     }
@@ -30,10 +29,9 @@ public class TimeoutSender {
     public void sendMessage(String message, int id) {
         try{
             try (Connection connection = factory.newConnection(); Channel channel = connection.createChannel()) {
-                channel.queueDeclare(queueName, false, false, false, null);
                 this.channel = channel;
-                channel.basicPublish("", queueName, null, message.getBytes("UTF-8"));
                 toSentMessages.add(id);
+                channel.basicPublish("", queueName, null, message.getBytes("UTF-8"));
                 startTimer();
                 System.out.println(queueName + " Sent '" + message + "'");
             }
@@ -47,8 +45,6 @@ public class TimeoutSender {
             @Override
             public void run() {
                 deadMessages.addAll(toSentMessages);
-                timer.cancel();
-                System.out.println(deadMessages.size());
             }
         }, 30000);
     }

@@ -11,6 +11,5 @@ public class MessageReceiverGateway {
 
     public MessageReceiverGateway(String queueName, DeliverCallback callback) throws IOException, TimeoutException {
         this.receiver = new Receiver(queueName, callback);
-
     }
 }

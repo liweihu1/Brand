@@ -6,30 +6,33 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import model.RequestReply;
 import model.alarm.AlarmReply;
 import model.alarm.AlarmRequest;
 
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 public class AlarmController {
-    @FXML
-    private ListView lvAlarmRequests;
-
+    private List<RequestReply<AlarmRequest, AlarmReply>> lvAlarmRequests;
     private int id = 0;
+    private Timer timer;
     private AlarmReceiverGateway receiver;
     private AlarmSenderGateway sender;
     private String[] testLocations;
     private Random rnd;
 
     public AlarmController() {
+        this.lvAlarmRequests = new ArrayList<>();
         receiver = new AlarmReceiverGateway(){
             @Override
             public void onReplyArrived(AlarmReply reply) {
                 super.onReplyArrived(reply);
+                System.out.println("WE'RE COMING FOR YOU!" + reply.getAlarmId());
                 sender.messageReceived(reply.getAlarmId());
+                addReplyToRequest(reply);
             }
         };
+        timer = new Timer();
         sender = new AlarmSenderGateway();
         rnd = new Random();
         rnd.setSeed(new Date().getTime());
@@ -42,10 +45,31 @@ public class AlarmController {
     }
 
     public void sendMessage() {
-        sender.sendMessage(new AlarmRequest(id++, testLocations[rnd.nextInt(testLocations.length)]));
+        int messageId = id++;
+        AlarmRequest request = new AlarmRequest(messageId, testLocations[rnd.nextInt(testLocations.length)]);
+        sender.sendMessage(request);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                RequestReply result = checkListviewForRequest(messageId);
+                if (result == null) {
+                    System.out.println(messageId + " SOMETHING WENT WRONG CALL 112/911/YOUR LOCAL POLICE NUMBER");
+                }
+            }
+        }, 30000);
+        System.out.println("We've send the message!");
     }
 
-    public void test() {
-        sender.messageReceived(2);
+    public void addReplyToRequest(AlarmReply reply) {
+        checkListviewForRequest(reply.getAlarmId()).setReply(reply);
+        System.out.println(checkListviewForRequest(reply.getAlarmId()).toString());
+    }
+
+    public RequestReply checkListviewForRequest(int id) {
+        RequestReply rr = lvAlarmRequests.stream().filter(f -> f.getRequest().getId() == id).findFirst().orElse(null);
+        if (rr != null){
+            return rr;
+        }
+        return null;
     }
 }

@@ -26,11 +26,11 @@ public class AlarmReceiverGateway {
         return (s, delivery) -> {
             String message = new String(delivery.getBody(), "UTF-8");
             onReplyArrived(serializer.stringToAlarmReply(message));
-            System.out.println(" [x] Received '" + message + "'");
+            System.out.println("Alarm Reply received '" + message + "'");
         };
     }
 
     public void onReplyArrived(AlarmReply reply) {
-        //TODO something
+        //Method for UI updates to override
     }
 }

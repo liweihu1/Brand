@@ -2,6 +2,7 @@ package forms.firestation.gateway;
 
 import gateways.MessageSenderGateway;
 import model.Serializer.FireStationSerializer;
+import model.firestation.FireStationReply;
 import model.firestation.FireStationRequest;
 import utilities.Constants;
 
@@ -21,7 +22,8 @@ public class FireStationSenderGateway {
         }
     }
 
-    public void sendMessage(FireStationRequest request) {
-        senderGateway.sendMessage(fireStationSerializer.FireStationRequestToString(request), request.getAlarmId());
+    public void sendMessage(FireStationReply reply) {
+        senderGateway.sendMessage(fireStationSerializer.FireStationReplyToString(reply), reply.getAlarmId());
+        System.out.println("Reply sent! " + reply.toString());
     }
 }

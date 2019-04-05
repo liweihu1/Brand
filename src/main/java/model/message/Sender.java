@@ -18,7 +18,7 @@ public class Sender {
         factory.setHost("localhost");
 
         try (Connection connection = factory.newConnection(); Channel channel = connection.createChannel()) {
-            channel.queueDeclare(queueName, false, false, false, null);
+//            channel.queueDeclare(queueName, false, false, false, null);
             this.channel = channel;
         }
     }

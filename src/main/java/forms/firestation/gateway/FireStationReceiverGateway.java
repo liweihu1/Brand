@@ -25,12 +25,12 @@ public class FireStationReceiverGateway {
     private DeliverCallback createNewDeliverCallback(){
         return (s, delivery) -> {
             String message = new String(delivery.getBody(), "UTF-8");
-            onReplyArrived(serializer.stringToFireStationRequest(message));
-            System.out.println(" [x] Received '" + message + "'");
+            onRequestArrived(serializer.stringToFireStationRequest(message));
+            System.out.println("Fire Station Request received '" + message + "'");
         };
     }
 
-    public void onReplyArrived(FireStationRequest reply) {
+    public void onRequestArrived(FireStationRequest reply) {
         //TODO something
     }
 }

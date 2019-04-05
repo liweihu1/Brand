@@ -2,22 +2,32 @@ package forms.firestation.controller;
 
 import forms.firestation.gateway.FireStationReceiverGateway;
 import forms.firestation.gateway.FireStationSenderGateway;
-import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
+import model.firestation.FireStationReply;
+import model.firestation.FireStationRequest;
 
-public class FireStationController {
-    @FXML
-    private ListView lvFireStation;
+import java.util.Random;
 
+public class FireStationController{
     private FireStationReceiverGateway receiver;
     private FireStationSenderGateway sender;
+    private Random rnd;
 
     public FireStationController() {
-        this.receiver = new FireStationReceiverGateway();
+        rnd = new Random();
+        this.receiver = new FireStationReceiverGateway() {
+            @Override
+            public void onRequestArrived(FireStationRequest request) {
+                super.onRequestArrived(request);
+                sendReply(request);
+            }
+        };
         this.sender = new FireStationSenderGateway();
     }
 
-    public void sendReply() {
-        System.out.println("WE'RE COMING!");
+    public void sendReply(FireStationRequest req) {
+        if (rnd.nextInt(10) > 2) {
+            FireStationReply reply = new FireStationReply("WE'RE COMING!!!!!", req.getAlarmId());
+            sender.sendMessage(reply);
+        }
     }
 }
